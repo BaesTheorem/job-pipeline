@@ -1,0 +1,48 @@
+filters:
+  and:
+    - file.ext == "md"
+    - type == "job-listing"
+formulas:
+  comp_display: if(comp_listed, "$" + (comp_min / 1000).toString() + "K-$" + (comp_max / 1000).toString() + "K", "unlisted")
+properties:
+  file.name:
+    displayName: Listing
+  applied:
+    displayName: Applied
+  formula.comp_display:
+    displayName: Pay
+  fit_score:
+    displayName: Fit
+views:
+  - type: table
+    name: Active
+    filters:
+      and:
+        - applied == false
+        - declined != true
+        - status != "closed"
+        - status != "withdrawn"
+        - status != "rejected"
+        - status != "skipped"
+    order: [applied, file.name, fit_score, formula.comp_display, location, contact, date_added, apply_url]
+    sort:
+      - property: fit_score
+        direction: DESC
+  - type: table
+    name: Applied
+    filters:
+      and:
+        - applied == true
+    order: [file.name, status, application_date, rejection_date, source]
+    sort:
+      - property: application_date
+        direction: DESC
+  - type: table
+    name: Re-apply watchlist
+    filters:
+      and:
+        - reapply == true
+    order: [file.name, company, status, formula.comp_display, rejection_date, apply_url]
+  - type: table
+    name: All
+    order: [file.name, status, source, date_added]

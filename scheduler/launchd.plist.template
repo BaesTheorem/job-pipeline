@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Daily job scan on macOS. Replace REPO_PATH and HOME_PATH, then:
+       cp scheduler/launchd.plist.template ~/Library/LaunchAgents/local.job-pipeline.scan.plist
+       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.job-pipeline.scan.plist
+     Copy the file; do not symlink it (launchd does not load symlinked agents reliably).
+     If the repo is under ~/Documents, the program launchd starts needs Full Disk Access. -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.job-pipeline.scan</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>REPO_PATH/scheduler/run-scan.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>HOME_PATH/.job-pipeline/logs/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>HOME_PATH/.job-pipeline/logs/launchd.err</string>
+</dict>
+</plist>

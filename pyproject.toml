@@ -1,0 +1,34 @@
+[project]
+name = "job-pipeline"
+version = "0.1.0"
+description = "A job-search pipeline for Claude Code: many job boards and ATS APIs, mechanical gates, one markdown note per posting, fact-checked resumes."
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "pyyaml>=6",
+    "curl_cffi>=0.7",
+    "pypdf>=4",
+    "playwright>=1.45",
+]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 160
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I"]
+ignore = [
+    "E402",  # lanes put sys.path set-up before sibling imports
+    "E401",  # a few legacy scripts import several modules on one line
+    "B008",
+    "I001",  # import order follows each script's own grouping
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

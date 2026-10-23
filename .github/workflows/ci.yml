@@ -1,0 +1,18 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - run: uv run ruff check pipeline resume tracker tests
+      - run: uv run pytest -q
+      - name: doctor on the example profile (fresh clone, no personal files)
+        run: JOB_PIPELINE_PROFILE=profile.example.yaml uv run python pipeline/doctor.py
+      - name: no personal files tracked
+        run: |
+          for f in profile.yaml .env resume/data/resume_data.json resume/data/facts.md; do
+            if git ls-files --error-unmatch "$f" >/dev/null 2>&1; then echo "$f is tracked"; exit 1; fi
+          done

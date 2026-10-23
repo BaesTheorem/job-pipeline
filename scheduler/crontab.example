@@ -1,0 +1,3 @@
+# Daily job scan at 09:00 (Linux, or macOS without launchd). Add with `crontab -e`.
+# cron starts with a bare PATH; run-scan.sh adds the usual install folders.
+0 9 * * * /bin/bash /path/to/job-pipeline/scheduler/run-scan.sh >> $HOME/.job-pipeline/logs/cron.log 2>&1

@@ -1,0 +1,186 @@
+# Candidate profile. Copy to profile.yaml (gitignored) and edit every value.
+# Every lane, gate and tool reads this file; no personal value lives in code.
+# Check it with: python3 pipeline/doctor.py
+#
+# The values below describe an example candidate: an entry-level IT and
+# security analyst who takes remote US work, or an office seat inside one
+# metro. Replace them with your own.
+
+candidate:
+  name: "Jane Doe"
+  # Your verb-level capability table (see docs/fit-scorecard.md). The fit
+  # scorecard on each listing note is scored against it.
+  capabilities: "profile/capabilities.md"
+
+comp:
+  # Annual USD. Band rule: a listed range passes when the floor falls inside
+  # it, and a range whose bottom is under the floor passes with a flag.
+  remote_floor: 60000
+  # Floor for any seat with an office requirement inside your home metro.
+  onsite_floor: 70000
+
+location:
+  # Leave `metro` out for a remote-only search; every lane then skips its
+  # local pass.
+  metro:
+    name: "Kansas City"
+    search: "Kansas City, MO"            # what the boards take in their location box
+    search_long: "Kansas City, Missouri"  # boards that want the full state name
+    radius_mi: 35
+    tag: "KC-LOCAL"                       # label printed on local rows
+    # Location strings that count as inside the metro (regex fragments,
+    # matched anywhere in the location text, case-insensitive).
+    cities:
+      - kansas city
+      - overland park
+      - lenexa
+      - olathe
+      - "lee'?s summit"
+      - "independence, mo"
+      - shawnee
+      - leawood
+      - merriam
+      - "mission, ks"
+      - prairie village
+      - "liberty, mo"
+      - blue springs
+      - grandview
+      - raytown
+      - gladstone
+
+titles:
+  # A title must match `keep` and must not match `drop`. Fragments are joined
+  # inside word boundaries, so "sr\\.?" and "engineer (iii|iv|v)" work.
+  keep:
+    - analyst
+    - it support
+    - it operations
+    - it specialist
+    - help ?desk
+    - service desk
+    - security
+    - identity
+    - iam
+    - grc
+    - compliance
+    - administrator
+    - m365
+    - microsoft 365
+    - intune
+    - endpoint
+    - desktop support
+    - technical support
+    - "systems? admin"
+    - resident consultant
+    - associate consultant
+    - fellow
+    - fellowship
+  drop:
+    # seniority above the target level
+    - senior
+    - "sr\\.?"
+    - lead
+    - principal
+    - staff
+    - manager
+    - director
+    - head of
+    - architect
+    - "engineer (iii|iv|v)"
+    - vp
+    - vice president
+    - chief
+    - supervisory
+    # platforms you do not have
+    - epic
+    - cerner
+    - salesforce
+    - dynamics 365
+    - mainframe
+    - sap
+    # sales shapes
+    - "pre-?sales"
+    - sales
+    - solutions engineer
+    - account executive
+    - customer success
+  # Titles that pass `keep` on a generic word but belong to another field.
+  # Full regexes, so they can describe a gap between two words.
+  off_lane:
+    - "\\b(behavior|bcba|financial|data|business|credit|research|budget|product|marketing|pricing|accounting|payroll|benefits|hr|clinical|actuarial|investment|supply chain|procurement|reporting|operations)\\b[^|]{0,45}\\banalyst"
+    - "\\banalyst\\b[^|]{0,6}\\b(product|revenue|marketing|pricing|accounting|financial|business|data|clinical|investment)\\b"
+  # Words that make an ambiguous title worth a JD read (used by moreboards).
+  strong:
+    - security
+    - cyber
+    - identity
+    - iam
+    - grc
+    - it
+    - infosec
+    - information technology
+    - help ?desk
+    - service desk
+    - endpoint
+    - soc
+
+knockouts:
+  # Structured fields some boards supply. Set what disqualifies you.
+  degree_required: true   # drop when the posting says a bachelor's is required
+  max_years: 8            # drop when the posting asks for more years than this
+  clearance: true         # drop when the posting needs a security clearance
+
+fit:
+  # Gate 4 pass line. Calibrate it on your own past applications
+  # (docs/fit-scorecard.md).
+  threshold: 0.65
+
+angles:
+  # Keyword rotation (pipeline/angles.py): 3 titles and 2 phrases a day,
+  # least recently used first.
+  titles:
+    - IT analyst
+    - security analyst
+    - IAM analyst
+    - GRC analyst
+    - IT auditor
+    - M365 administrator
+    - service desk analyst
+    - SOC analyst
+    - information security analyst
+    - IT support specialist
+  phrases:
+    # duties from your real work; they suit full-text boards
+    - access provisioning
+    - Entra ID
+    - phishing remediation
+    - Conditional Access
+    - identity governance
+    - help desk
+
+paths:
+  # One markdown note per posting. An Obsidian folder works well.
+  listings: "~/JobSearch/Job Listings"
+  # Older notes that dedup and the watchlists must still see.
+  archive:
+    - "~/JobSearch/Archive"
+  # Lane snapshots and seen-files (gitignored). Relative paths are under the repo.
+  state: "state"
+
+lanes:
+  moreboards:
+    # Employer career sites on the Jibe platform: {short name: host}.
+    jibe: {}
+    #   garmin: careers.garmin.com
+    # Employers on Oracle HCM Cloud: {short name: {host, site, company}}.
+    oracle_hcm: {}
+    #   oracle-health: {host: eeho.fa.us2.oraclecloud.com, site: CX_45001, company: Oracle Health}
+  freehire:
+    # freehire.me facets. `category` narrows the relevance-ordered search.
+    categories: [security, it, support]
+    country: US
+
+notify:
+  # Optional command for the scheduled scan's alerts. It gets two arguments:
+  # the message and a title. Empty = print only.
+  command: ""
