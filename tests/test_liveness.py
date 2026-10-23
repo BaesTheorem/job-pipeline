@@ -57,3 +57,10 @@ def test_page_banner_and_js_shell(monkeypatch):
     assert lv.check("https://careers.example.com/job/1")[0] == "closed"
     monkeypatch.setattr(lv, "http", lambda url, timeout=20: (200, "<div id=app></div>"))
     assert lv.check("https://careers.example.com/job/1")[0] == "unknown"
+
+
+def test_ui_strings_inside_scripts_do_not_close(monkeypatch):
+    page = ('<script>{"jobNotFoundMessage":"This job post is no longer available"}</script>'
+            "<h1>Security Analyst</h1>" + "<p>duties</p>" * 400)
+    monkeypatch.setattr(lv, "http", lambda url, timeout=20: (200, page))
+    assert lv.check("https://ats.rippling.com/acme/jobs/1")[0] == "open"
