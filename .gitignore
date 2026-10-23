@@ -1,5 +1,5 @@
-profile.yaml
-profile/
+/profile.yaml
+/profile/
 .env
 state/*
 !state/README.md
