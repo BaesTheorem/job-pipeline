@@ -5,8 +5,8 @@ Lanes, gates and tools read the search owner's rules from `profile.yaml`
 `profile.example.yaml` to `profile.yaml` and edit it; `doctor.py` checks it.
 
 Lookup order for the file: `$JOB_PIPELINE_PROFILE`, then `profile.yaml` at the
-repo root. Two comp keys also accept an environment override, which the test
-suite uses: `JOB_COMP_FLOOR` and `JOB_ONSITE_FLOOR`.
+repo root. Two comp keys also accept an override from the environment or the
+repo `.env`: `JOB_COMP_FLOOR` and `JOB_ONSITE_FLOOR` (the test suite uses this).
 
 INVARIANTS
 - No personal value (floor, city, title, path) is hardcoded in this module.
@@ -64,8 +64,20 @@ def get(dotted: str, default: Any = ..., data: dict[str, Any] | None = None) -> 
 
 # --- compensation ---------------------------------------------------------
 
+def dotenv(name: str) -> str | None:
+    """A value from the repo-root `.env` (gitignored), or None."""
+    path = REPO / ".env"
+    if not path.exists():
+        return None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        k, sep, v = line.strip().partition("=")
+        if sep and k.removeprefix("export ").strip() == name and v.strip():
+            return v.strip().strip('"').strip("'")
+    return None
+
+
 def _money(key: str, env: str) -> int:
-    raw = os.environ.get(env)
+    raw = os.environ.get(env) or dotenv(env)
     if raw is None:
         raw = get(key)
     try:
